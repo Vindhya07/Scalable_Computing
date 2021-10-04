@@ -56,7 +56,7 @@ def main():
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
 
-        dirList = os.listdir(args.captcha_dir)
+        dirlist = os.listdir(args.captcha_dir)
         list.sort(dirlist)
         for x in dirlist:
                 # load image and preprocess it
