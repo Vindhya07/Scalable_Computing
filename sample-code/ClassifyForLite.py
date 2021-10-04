@@ -10,7 +10,7 @@ import numpy
 import string
 import random
 import argparse
-import tensorflow as tf
+from tflite_runtime.interpreter import Interpreter
 import tensorflow.keras as keras
 
 def getFinalOutput(numlist, interpreter):
@@ -52,7 +52,7 @@ def main():
 
     with tf.device('/cpu:0'):
         with open(args.output, 'w') as output_file:
-            interpreter = tf.lite.Interpreter(model_path="model.tflite")
+            interpreter = Interpreter("model.tflite")
             interpreter.allocate_tensors()
             input_details = interpreter.get_input_details()
             output_details = interpreter.get_output_details()
