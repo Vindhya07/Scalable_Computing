@@ -50,6 +50,7 @@ def main():
     print("Classifying captchas with symbol set {" + captcha_symbols + "}")
 
     with open(args.output, 'w') as output_file:
+        output_file.write("nairam\n")
         interpreter = Interpreter("model.tflite")
         interpreter.allocate_tensors()
         input_details = interpreter.get_input_details()
@@ -69,7 +70,7 @@ def main():
 
             interpreter.invoke()
             output_data = interpreter.get_tensor(output_details[0]['index'])
-            output_file.write(x + ", " + getFinalOutput(output_details, interpreter) + "\n")
+            output_file.write(x + "," + getFinalOutput(output_details, interpreter) + "\n")
 
             print('Classified ' + x)
 
