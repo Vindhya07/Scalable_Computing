@@ -61,7 +61,7 @@ def main():
             raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
             rgb_data = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
             image = numpy.float32(numpy.array(rgb_data) / 255.0)
-            interpreter = tf.lite.Interpreter(model_path="model.tflite")
+#            interpreter = tf.lite.Interpreter(model_path="model.tflite")
             interpreter.allocate_tensors()
             input_details = interpreter.get_input_details()
             output_details = interpreter.get_output_details()
