@@ -12,7 +12,7 @@ import random
 import argparse
 from tflite_runtime.interpreter import Interpreter
 
-def getFinalOutputs(numlist, interpreter):
+def getFinalOutput(numlist, interpreter):
     return ''.join(decode("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", interpreter.get_tensor(x["index"])) for x in numlist)
 
 def decode(characters, y):
