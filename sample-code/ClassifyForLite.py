@@ -11,9 +11,8 @@ import string
 import random
 import argparse
 from tflite_runtime.interpreter import Interpreter
-import tensorflow.keras as keras
 
-def getFinalOutput(numlist, interpreter):
+def getFinalOutputs(numlist, interpreter):
     return ''.join(decode("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", interpreter.get_tensor(x["index"])) for x in numlist)
 
 def decode(characters, y):
@@ -50,30 +49,29 @@ def main():
 
     print("Classifying captchas with symbol set {" + captcha_symbols + "}")
 
-    with tf.device('/cpu:0'):
-        with open(args.output, 'w') as output_file:
-            interpreter = Interpreter("model.tflite")
+    with open(args.output, 'w') as output_file:
+        interpreter = Interpreter("model.tflite")
+        interpreter.allocate_tensors()
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+
+
+        for x in os.listdir(args.captcha_dir):
+                # load image and preprocess it
+            raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
+            rgb_data = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
+            image = numpy.float32(numpy.array(rgb_data) / 255.0)
+            interpreter = tf.lite.Interpreter(model_path="model.tflite")
             interpreter.allocate_tensors()
             input_details = interpreter.get_input_details()
             output_details = interpreter.get_output_details()
+            interpreter.set_tensor(input_details[0]['index'], [image])
 
+            interpreter.invoke()
+            output_data = interpreter.get_tensor(output_details[0]['index'])
+            output_file.write(x + ", " + getFinalOutput(output_details, interpreter) + "\n")
 
-            for x in os.listdir(args.captcha_dir):
-                # load image and preprocess it
-                raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
-                rgb_data = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
-                image = numpy.float32(numpy.array(rgb_data) / 255.0)
-                nterpreter = tf.lite.Interpreter(model_path="model.tflite")
-                interpreter.allocate_tensors()
-                input_details = interpreter.get_input_details()
-                output_details = interpreter.get_output_details()
-                interpreter.set_tensor(input_details[0]['index'], [image])
-
-                interpreter.invoke()
-                output_data = interpreter.get_tensor(output_details[0]['index'])
-                output_file.write(x + ", " + getFinalOutput(output_details, interpreter) + "\n")
-
-                print('Classified ' + x)
+            print('Classified ' + x)
 
 if __name__ == '__main__':
     main()
