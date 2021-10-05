@@ -12,8 +12,8 @@ import random
 import argparse
 from tflite_runtime.interpreter import Interpreter
 
-def getFinalOutput(numlist, interpreter):
-    return ''.join(decode("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", interpreter.get_tensor(x["index"])) for x in numlist)
+def getFinalOutput(numlist, interpreter, characters):
+    return ''.join(decode(characters, interpreter.get_tensor(x["index"])) for x in numlist)
 
 def decode(characters, y):
     y = numpy.argmax(numpy.array(y), axis=1)
@@ -71,7 +71,7 @@ def main():
 
             interpreter.invoke()
             output_data = interpreter.get_tensor(output_details[0]['index'])
-            output_file.write(x + "," + getFinalOutput(output_details, interpreter) + "\n")
+            output_file.write(x + "," + getFinalOutput(output_details, interpreter, captcha_symbols) + "\n")
 
             print('Classified ' + x)
 
