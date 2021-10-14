@@ -50,7 +50,7 @@ def main():
     print("Classifying captchas with symbol set {" + captcha_symbols + "}")
 
     with open(args.output, 'w') as output_file:
-        output_file.write("nairam\n")
+            
         interpreter = Interpreter("model.tflite")
         interpreter.allocate_tensors()
         input_details = interpreter.get_input_details()
